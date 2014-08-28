@@ -3,11 +3,6 @@ define tomcat::install (
   $filestore,
   $group,
   $java_home,
-  $jolokia,
-  $jolokia_address,
-  $jolokia_cron,
-  $jolokia_port,
-  $jolokia_version,
   $logdir,
   $ulimit_nofile,
   $user,
@@ -55,40 +50,21 @@ define tomcat::install (
     ensure  => directory,
     require => Exec["tomcat-unpack-${user}"],
   }
-  if $jolokia {
-    file { "${basedir}/${subdir}/jolokia":
-      ensure  => directory,
-      mode    => '0755',
-      require => File["${basedir}/${subdir}"],
-    }
-    file { "${basedir}/${subdir}/jolokia/jolokia.war":
-      ensure  => present,
-      mode    => '0444',
-      source  => "${filestore}/jolokia-war-${jolokia_version}.war",
-      require => File["${basedir}/${subdir}/jolokia"],
-    }
-  }
   file { "${basedir}/tomcat":
     ensure  => link,
     target  => $subdir,
     require => File[$basedir],
   }
-  file { "${basedir}/${subdir}/bin/jvm_memory_os":
-    ensure  => present,
-    mode    => '0555',
-    content => template('tomcat/jvm_memory_os.erb'),
-    require => File["${basedir}/${subdir}"],
-  }
-  file { "${basedir}/${subdir}/bin/thread_dump":
-    ensure  => present,
-    mode    => '0555',
-    content => template('tomcat/thread_dump.erb'),
-    require => File["${basedir}/${subdir}"],
-  }
-  file { "${basedir}/${subdir}/bin/request_processor":
-    ensure  => present,
-    mode    => '0555',
-    content => template('tomcat/request_processor.erb'),
-    require => File["${basedir}/${subdir}"],
-  }
+  #file { "${basedir}/${subdir}/bin/thread_dump":
+  #  ensure  => present,
+  #  mode    => '0555',
+  #  content => template('tomcat/thread_dump.erb'),
+  #  require => File["${basedir}/${subdir}"],
+  #}
+  #file { "${basedir}/${subdir}/bin/request_processor":
+  #  ensure  => present,
+  #  mode    => '0555',
+  #  content => template('tomcat/request_processor.erb'),
+  #  require => File["${basedir}/${subdir}"],
+  #}
 }

@@ -14,11 +14,6 @@ define tomcat::instance (
   $group            = $::tomcat::group,
   $java_home        = $::tomcat::java_home,
   $java_opts        = $::tomcat::java_opts,
-  $jolokia          = $::tomcat::jolokia,
-  $jolokia_address  = $::tomcat::jolokia_address,
-  $jolokia_cron     = $::tomcat::jolokia_cron,
-  $jolokia_port     = $::tomcat::jolokia_port,
-  $jolokia_version  = $::tomcat::jolokia_version,
   $localhost        = $::tomcat::localhost,
   $logdir           = $::tomcat::logdir,
   $max_mem          = $::tomcat::max_mem,
@@ -44,24 +39,11 @@ define tomcat::instance (
     }
   }
 
-  include runit
-  if ! defined(Runit::User[$user]) {
-    runit::user { $user:
-      basedir => $basedir,
-      group   => $group,
-    }
-  }
-
   tomcat::install { "${user}-${product}":
     basedir         => $basedir,
     filestore       => $filestore,
     group           => $group,
     java_home       => $java_home,
-    jolokia         => $jolokia,
-    jolokia_address => $jolokia_address,
-    jolokia_cron    => $jolokia_cron,
-    jolokia_port    => $jolokia_port,
-    jolokia_version => $jolokia_version,
     logdir          => $logdir,
     ulimit_nofile   => $ulimit_nofile,
     user            => $user,
@@ -114,11 +96,6 @@ define tomcat::instance (
       group           => $group,
       java_home       => $java_home,
       java_opts       => $java_opts,
-      jolokia         => $jolokia,
-      jolokia_address => $jolokia_address,
-      jolokia_cron    => $jolokia_cron,
-      jolokia_port    => $jolokia_port,
-      jolokia_version => $jolokia_version,
       localhost       => $localhost,
       logdir          => $logdir,
       max_mem         => $max_mem,
@@ -172,11 +149,6 @@ define tomcat::instance (
     version         => $version,
     java_home       => $java_home,
     java_opts       => $java_opts,
-    jolokia         => $jolokia,
-    jolokia_address => $jolokia_address,
-    jolokia_cron    => $jolokia_cron,
-    jolokia_port    => $jolokia_port,
-    jolokia_version => $jolokia_version,
     config          => $config,
     cpu_affinity    => $cpu_affinity,
     min_mem         => $min_mem,
