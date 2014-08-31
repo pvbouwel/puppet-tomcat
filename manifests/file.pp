@@ -1,5 +1,6 @@
 define tomcat::file (
   $group,
+  $instancename,
   $mode,
   $product_dir,
   $user,
@@ -15,7 +16,7 @@ define tomcat::file (
       creates => $dir,
       user    => $user,
       group   => $group,
-      require => Exec["tomcat-unpack-${user}"],
+      require => Exec["tomcat-unpack-${instancename}"],
     }
   }
   if $source {
@@ -26,7 +27,7 @@ define tomcat::file (
       mode     => $mode,
       source   => $source,
       require  => Exec[
-        "tomcat-unpack-${user}",
+        "tomcat-unpack-${instancename}",
         "create-parent-dir-${filename}"
       ],
     }

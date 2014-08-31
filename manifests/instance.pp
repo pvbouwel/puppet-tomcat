@@ -23,15 +23,16 @@ define tomcat::instance (
   $remove_examples  = $::tomcat::remove_examples,
   $templates        = $::tomcat::templates,
   $ulimit_nofile    = $::tomcat::ulimit_nofile,
+  $user             = $::tomcat::user,
   $version          = $::tomcat::version,
   $workspace        = $::tomcat::workspace,
 ) {
   if ! $version {
     fail( 'tomcat version MUST be set' )
   }
-  $user        = $title
+  $instancename        = $title
   $product     = 'apache-tomcat'
-  $product_dir = "${basedir}/${product}-${version}"
+  $product_dir = "${basedir}/${instancename}/${product}-${version}"
 
   if ! defined(File[$workspace]) {
     file { $workspace:
@@ -39,10 +40,30 @@ define tomcat::instance (
     }
   }
 
-  tomcat::install { "${user}-${product}":
+  if ! defined(Group[$group]) {
+    group { "${group}":
+      ensure => 'present',
+    }  
+  }
+  if ! defined(User[$user]) {    
+    user { "${user}":
+      ensure           => 'present',
+      comment          => 'Apache tomcat user',
+      gid              => "${group}",
+      password         => '!!',
+      password_max_age => '-1',
+      password_min_age => '-1',
+      shell            => '/sbin/nologin',
+      managehome       => true,
+    }
+  }
+  
+
+  tomcat::install { "${instancename}-${product}":
     basedir         => $basedir,
     filestore       => $filestore,
     group           => $group,
+    instancedir     => $instancename,
     java_home       => $java_home,
     logdir          => $logdir,
     ulimit_nofile   => $ulimit_nofile,
@@ -58,7 +79,7 @@ define tomcat::instance (
       group    => $group,
       mode     => $mode,
       content  => template('tomcat/server.xml.erb'),
-      require  => Exec["tomcat-unpack-${user}"],
+      require  => Exec["tomcat-unpack-${instancename}"],
     }
   }
 
@@ -69,16 +90,17 @@ define tomcat::instance (
       group    => $group,
       mode     => $mode,
       content  => template('tomcat/logging.properties.erb'),
-      require  => Exec["tomcat-unpack-${user}"],
+      require  => Exec["tomcat-unpack-${instancename}"],
     }
   }
 
   create_resources_with_prefix( 'tomcat::file', $files,
     {
-      group       => $group,
-      mode        => $mode,
-      product_dir => $product_dir,
-      user        => $user,
+      group         => $group,
+      instancename  => $instancename,
+      mode          => $mode,
+      product_dir   => $product_dir,
+      user          => $user,
     },
     "${product_dir}/",
   )
@@ -117,7 +139,7 @@ define tomcat::instance (
       force   => true,
       purge   => true,
       backup  => false,
-      require => Exec["tomcat-unpack-${user}"],
+      require => Exec["tomcat-unpack-${instancename}"],
     }
   }
 
@@ -128,11 +150,11 @@ define tomcat::instance (
       force   => true,
       purge   => true,
       backup  => false,
-      require => Exec["tomcat-unpack-${user}"],
+      require => Exec["tomcat-unpack-${instancename}"],
     }
   }
 
-  tomcat::service { "${user}-${product}":
+  tomcat::service { "${instancename}-${product}":
     basedir         => $basedir,
     bind_address    => $bind_address,
     check_port      => $check_port,

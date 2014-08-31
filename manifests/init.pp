@@ -24,6 +24,7 @@ class tomcat (
   $remove_examples  = true,
   $templates        = {},
   $ulimit_nofile    = '$(ulimit -H -n)',
+  $user             = 'tomcat',
   $workspace        = '/root/tomcat',
 ) {
   $tomcat = hiera_hash('tomcat::instances', undef)

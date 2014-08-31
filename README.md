@@ -15,63 +15,17 @@ The recommended usage is to place the configuration in hiera and just:
 
     include tomcat
 
-Example hiera config:
+Example hiera config is included in the root of the repository.
 
-    tomcat::config:
-      admin_user: 'admin'
-    
-    tomcat::cpu_affinity: '0,1'
-    
-    tomcat::files:
-      lib/postgresql-9.2-1002.jdbc4.jar:
-        source:   'puppet:///files/jdbc/postgresql-9.2-1002.jdbc4.jar'
-    
-    tomcat::templates:
-      conf/tomcat-users.xml:
-        mode:     '0440'
-        template: '/etc/puppet/templates/myapp/tomcat-users.xml.erb'
-    
-    tomcat::group:     'tomcat'
-    
-    tomcat::java_home: '/usr/java/jdk1.7.0_17'
-    
-    tomcat::java_opts: '-XX:MaxPermSize=512m'
+If you use the puppet filestore, don't forget to stage your tarballs. The
+default tomcat naming scheme is used for the filenames.
 
-    tomcat::jolokia_version: '1.1.1'
-    
-    tomcat::min_mem:   '256m'
-    tomcat::max_mem:   '512m'
 
-    tomcat::version:   '7.0.37'
-    
-    tomcat::instances:
-      tomcat1:
-        basedir:         '/apps/tomcat1'
-        bind_address:    "%{ipaddress_eth0_1}"
-        localhost:       '127.0.0.101'
-        logdir:          '/apps/tomcat1/logs'
-        jolokia:         'true'
-        jolokia_address: %{ipaddress_eth0_1}
-        jolokia_port:    '8190'
-        config:
-          admin_user:    'fbloggs'
-        dependencies:
-          - '/apps/activemq1/service/activemq'
-      tomcat2:
-        basedir:         '/apps/tomcat2'
-        bind_address:    "%{ipaddress_eth0_2}"
-        localhost:       '127.0.0.102'
-        logdir:          '/apps/tomcat2/logs'
-        config:
-          admin_user:    'jbloggs'
-        templates:
-          conf/server.xml:
-            mode:     '0440'
-            template: '/etc/puppet/templates/myapp/tomcat-server.xml.erb'
 
 ## tomcat parameters
 
-*basedir*: The base installation directory. Default: '/opt/tomcat'
+*basedir*: The base installation directory. Default: '/opt/tomcat' this 
+directory will hold the extracted tarball.
 
 *bind_address*: The IP or hostname to bind listen ports to. Default: $fqdn
 
@@ -214,7 +168,7 @@ templates configuration.
 
 ## Product files
 
-By default the product tar file (eg. 'apache-tomcat-7.0.32.tar.gz') is expected
+By default the product tar file (eg. 'apache-tomcat-7.0.55.tar.gz') is expected
 to be found under a 'tomcat' directory of the 'files' file store.  For example
 if /etc/puppet/fileserver.conf has:
 
@@ -222,75 +176,15 @@ if /etc/puppet/fileserver.conf has:
     path /var/lib/puppet/files
 
 then put the tar file in /var/lib/puppet/files/tomcat.  Any files specified
-with the 'files' parameter can also be placed in this directory, as can the
-Jolokia war file.
+with the 'files' parameter can also be placed in this directory.
 
 This location can be changed by setting the 'filestore' parameter.
 
-## Monitoring
 
-The jolokia parameters enable JMX statistics to be queried over HTTP - for example:
-
-    $ curl http://localhost:8190/jolokia/read/java.lang:type=Memory/HeapMemoryUsage
-    {"timestamp":1363883323,"status":200,"request":{"mbean":"java.lang:type=Memory"
-    ," attribute":"HeapMemoryUsage","type":"read"},"value":{"max":1908932608,"commi
-    tted":1029046272,"init":1073741824,"used":155889168}}
-
-To limit what what can be accessed a jolokia-access.xml can be included in the
-war file.  This is what I do to ensure read-only access:
-
-    $ cd /var/lib/puppet/files/tomcat
-    $ wget http://labs.consol.de/maven/repository/org/jolokia/jolokia-war/1.1.1/jolokia-war-1.1.1.war
-    $ vim jolokia-access.xml
-    <?xml version="1.0" encoding="utf-8"?>
-    <restrict>
-      <commands>
-        <command>read</command>
-        <command>list</command>
-        <command>version</command>
-        <command>search</command>
-      </commands>
-      <http>
-        <method>get</method>
-        <method>post</method>
-      </http>
-    </restrict>
-    $ mkdir -p WEB-INF/classes
-    $ cp jolokia-access.xml WEB-INF/classes/
-    $ zip -u jolokia-war-1.1.1.war WEB-INF/classes/jolokia-access.xml
-    $ rm -rf WEB-INF
-
-See http://www.jolokia.org/ for more information.
-
-If jolokia support is enabled then a JVM memory and OS monitoring script is run
-from cron every minute writing to a local log file.
-
-A sample request monitoring script that uses Jolokia is also included.  You can find
-it under the bin directory of your Tomcat installation.
-
-## Dependencies
-
-It must be possible to check the status (using 'sv stat') of each of the
-service directories specified as dependencies.  This is problematic for
-services running as different users as the supervise directory and supervise/ok
-file are only accessible by the owner. 
-
-One way to resolve this is to add the user to the destination group and modify
-the group permissions - for example:
-
-    $ usermod -a -G activemq tomcat1
-    $ cd /apps/activemq1/service/activemq
-    $ find . -follow -type d -name 'supervise' -exec chmod g+x {} \;
-    $ find . -follow -type p -name 'ok' -exec chmod g+w {} \;
-
-Another way is to use ACLs to grant the user the required permissions - for example:
-
-    $ cd /apps/activemq1/service/activemq
-    $ find . -follow -type d -name 'supervise' -exec setfacl -m u:tomcat1:x {} \;
-    $ find . -follow -type p -name 'ok' -exec setfacl -m u:tomcat1:w {} \; 
 
 ## Support
 
 License: Apache License, Version 2.0
 
-GitHub URL: https://github.com/erwbgy/puppet-tomcat
+GitHub URL: https://github.com/pvbouwel/puppet-tomcat
+forked from: https://github.com/erwbgy/puppet-tomcat

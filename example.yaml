@@ -1,18 +1,12 @@
+classes:
+  - tomcat
+
 tomcat::config:
   admin_user: 'admin'
 
 tomcat::cpu_affinity: '0,1'
 
-tomcat::files:
-  lib/postgresql-9.2-1002.jdbc4.jar:
-    source:   'puppet:///files/jdbc/postgresql-9.2-1002.jdbc4.jar'
-
-tomcat::templates:
-  conf/tomcat-users.xml:
-    mode:     '0440'
-    template: '/etc/puppet/templates/myapp/tomcat-users.xml.erb'
-
-tomcat::filestore: 'puppet://files/tomcat'
+tomcat::filestore: 'puppet:///files/tomcat'
 
 tomcat::group:     'tomcat'
 
@@ -25,7 +19,7 @@ tomcat::jolokia_version: '1.1.0'
 tomcat::min_mem:   '256m'
 tomcat::max_mem:   '512m'
 
-tomcat::version:   '7.0.37'
+tomcat::version:   '7.0.55'
 
 tomcat::gclog_enabled:  'true'
 tomcat::gclog_numfiles: '10'
@@ -33,24 +27,5 @@ tomcat::gclog_filesize: '512M'
 
 tomcat::instances:
   tomcat1:
-    basedir:         '/apps/tomcat1'
+    basedir:         '/opt'
     bind_address:    "%{ipaddress_eth0_1}"
-    logdir:          '/apps/tomcat1/logs'
-    jolokia:         'true'
-    jolokia_address: %{ipaddress_eth0_1}
-    jolokia_port:    '8190'
-    config:
-      admin_user:    'fbloggs'
-    dependencies:
-      - '/apps/activemq1/service/activemq'
-  tomcat2:
-    basedir:      '/apps/tomcat2'
-    bind_address: "%{ipaddress_eth0_2}"
-    logdir:       '/apps/tomcat2/logs'
-    config:
-      admin_user: 'jbloggs'
-    templates:
-      conf/server.xml:
-        mode:     '0440'
-        template: '/etc/puppet/templates/myapp/tomcat-server.xml.erb'
-
