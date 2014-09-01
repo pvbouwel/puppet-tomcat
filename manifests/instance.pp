@@ -72,6 +72,17 @@ define tomcat::instance (
     workspace       => $workspace,
   }
 
+  if ! $templates['bin/startup.sh'] {
+    file { "${product_dir}/bin/startup.sh":
+      ensure   => present,
+      owner    => $user,
+      group    => $group,
+      mode     => $mode,
+      content  => template('tomcat/startup.sh.erb'),
+      require  => Exec["tomcat-unpack-${instancename}"],
+    }
+  }
+
   if ! $templates['conf/server.xml'] {
     file { "${product_dir}/conf/server.xml":
       ensure   => present,
