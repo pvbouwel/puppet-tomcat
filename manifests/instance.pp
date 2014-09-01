@@ -3,6 +3,7 @@ define tomcat::instance (
   $bind_address     = $::tomcat::bind_address,
   $check_port       = $::tomcat::check_port,
   $config           = $::tomcat::config,
+  $connectors       = undef,
   $cpu_affinity     = $::tomcat::cpu_affinity,
   $dependencies     = $::tomcat::dependencies,
   $down             = $::tomcat::down,

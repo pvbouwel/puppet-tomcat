@@ -1,0 +1,18 @@
+{
+  "author": "pvbouwel",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">=2.6.0"
+    }
+  ],
+  "license": "Apache License, Version 2.0",
+  "name": "pvbouwel-tomcat",
+  "operatingsystem_support": [],
+  "project_page": "https://github.com/pvbouwel/puppet-tomcat",
+  "requirements": [],
+  "source": "git@github.com:pvbouwel/puppet-tomcat.git",
+  "summary": "Setup tomcat instances",
+  "tags": [],
+  "version": "0.0.5"
+}
