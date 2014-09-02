@@ -22,6 +22,7 @@ define tomcat::instance (
   $mode             = $::tomcat::mode,
   $remove_docs      = $::tomcat::remove_docs,
   $remove_examples  = $::tomcat::remove_examples,
+  $site_specific    = $::tomcat::site_specific,
   $templates        = $::tomcat::templates,
   $ulimit_nofile    = $::tomcat::ulimit_nofile,
   $user             = $::tomcat::user,

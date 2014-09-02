@@ -22,6 +22,7 @@ class tomcat (
   $mode             = undef,
   $remove_docs      = true,
   $remove_examples  = true,
+  $site_specific    = undef,
   $templates        = {},
   $ulimit_nofile    = '$(ulimit -H -n)',
   $user             = 'tomcat',
