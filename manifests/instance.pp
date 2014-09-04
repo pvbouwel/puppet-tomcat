@@ -83,9 +83,18 @@ define tomcat::instance (
       content  => template('tomcat/startup.sh.erb'),
       require  => Exec["tomcat-unpack-${instancename}"],
     }
+  } else {
+    file { "${product_dir}/bin/startup.sh":
+      ensure   => present,
+      owner    => $user,
+      group    => $group,
+      mode     => $mode,
+      content  => template($templates['bin/startup.sh']),
+      require  => Exec["tomcat-unpack-${instancename}"],
+    }
   }
 
-  if ! $templates['conf/server.xml'] {
+  if ! $templates['server.xml'] {
     file { "${product_dir}/conf/server.xml":
       ensure   => present,
       owner    => $user,
@@ -94,15 +103,33 @@ define tomcat::instance (
       content  => template('tomcat/server.xml.erb'),
       require  => Exec["tomcat-unpack-${instancename}"],
     }
+  } else {
+    file { "${product_dir}/conf/server.xml":
+      ensure   => present,
+      owner    => $user,
+      group    => $group,
+      mode     => $mode,
+      content  => template($templates['server.xml']),
+      require  => Exec["tomcat-unpack-${instancename}"],
+    }
   }
 
-  if ! $templates['conf/logging.properties'] {
+  if ! $templates['logging.properties'] {
     file { "${product_dir}/conf/logging.properties":
       ensure   => present,
       owner    => $user,
       group    => $group,
       mode     => $mode,
       content  => template('tomcat/logging.properties.erb'),
+      require  => Exec["tomcat-unpack-${instancename}"],
+    }
+  } else {
+    file { "${product_dir}/conf/logging.properties":
+      ensure   => present,
+      owner    => $user,
+      group    => $group,
+      mode     => $mode,
+      content  => template($templates['logging.properties']),
       require  => Exec["tomcat-unpack-${instancename}"],
     }
   }
@@ -114,33 +141,6 @@ define tomcat::instance (
       mode          => $mode,
       product_dir   => $product_dir,
       user          => $user,
-    },
-    "${product_dir}/",
-  )
-
-  create_resources_with_prefix( 'tomcat::template', $templates,
-    {
-      basedir         => $basedir,
-      bind_address    => $bind_address,
-      check_port      => $check_port,
-      config          => $config,
-      cpu_affinity    => $cpu_affinity,
-      dependencies    => $dependencies,
-      down            => $down,
-      filestore       => $filestore,
-      group           => $group,
-      java_home       => $java_home,
-      java_opts       => $java_opts,
-      localhost       => $localhost,
-      logdir          => $logdir,
-      max_mem         => $max_mem,
-      min_mem         => $min_mem,
-      mode            => $mode,
-      product_dir     => $product_dir,
-      ulimit_nofile   => $ulimit_nofile,
-      user            => $user,
-      version         => $version,
-      workspace       => $workspace,
     },
     "${product_dir}/",
   )

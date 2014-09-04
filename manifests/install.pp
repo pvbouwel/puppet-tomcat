@@ -68,16 +68,4 @@ define tomcat::install (
     target  => $subdir,
     require => File[$baseinstancedir],
   }
-  #file { "${basedir}/${subdir}/bin/thread_dump":
-  #  ensure  => present,
-  #  mode    => '0555',
-  #  content => template('tomcat/thread_dump.erb'),
-  #  require => File["${basedir}/${subdir}"],
-  #}
-  #file { "${basedir}/${subdir}/bin/request_processor":
-  #  ensure  => present,
-  #  mode    => '0555',
-  #  content => template('tomcat/request_processor.erb'),
-  #  require => File["${basedir}/${subdir}"],
-  #}
 }

@@ -91,7 +91,9 @@ Default: '1.1.1'
 
 *remove_examples*: Whether or not to remove the Tomcat examples under webapps. Default: true
 
-*templates*: A hash of configuration templates to process and install - see below
+*templates*: A hash of templates. if an entry is placed for one of the templates, the passed 
+template is used instead of the template supplied in modules. Each template in the templates
+directory can be replaced by creating an entry for the name. 
 
 *ulimit_nofile*: The maximum number of open file descriptors the java process
 is allowed.  Default is '$(ulimit -H -n)' which sets the value to the hard
@@ -180,9 +182,11 @@ with the 'files' parameter can also be placed in this directory.
 
 This location can be changed by setting the 'filestore' parameter.
 
+# Facts
+This module will create a fact called tomcat_instances that will report on the
+provided instances.  
 
-
-## Support
+# Support
 
 License: Apache License, Version 2.0
 
