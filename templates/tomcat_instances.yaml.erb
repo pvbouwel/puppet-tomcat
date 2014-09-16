@@ -1,6 +1,7 @@
 <% if @tomcat_instances_hash -%>
 tomcat_instances:
-<% tomcat_instances_hash.each_pair do |tomcat_instance_name, tomcat_instance_hash| -%>
+<% tomcat_instances_hash.each_pair do |tomcat_instance_name, tomcat_instance_hash|
+if tomcat_instance_hash.class == Hash and not (tomcat_instance_hash['ensure'] and tomcat_instance_hash['ensure'].include? 'absent') -%> 
   <%=tomcat_instance_name.lstrip -%>:
 <% tomcat_instances_hash[tomcat_instance_name].each_pair do |tomcat_instance_lvl1_name, tomcat_instance_lvl1_value| -%>
 <% if tomcat_instance_lvl1_value.class == Hash -%>
@@ -44,6 +45,7 @@ tomcat_instances:
     <%=tomcat_instance_lvl1_name -%>:  <%=tomcat_instance_lvl1_value %>
 <% end -%><%# end for lvl1-if -%>
 <% end -%><%# end for lvl1 iterator -%>
+<% end -%><%# end for if ensure statement -%>
 <% end -%><%# end for tomcat_instances_hash iterator -%>
 <% else -%>
 {}
