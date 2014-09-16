@@ -1,32 +1,50 @@
-<%
-tomcat_base_path = @basedir
-tomcat_version_path = @tomcat_version_path
-  
--%>
 <% if @tomcat_instances_hash -%>
 tomcat_instances:
 <% tomcat_instances_hash.each_pair do |tomcat_instance_name, tomcat_instance_hash| -%>
-  <%=tomcat_instance_name.lstrip%>:
-<% 
-  tomcat_instance_base_path = tomcat_base_path 
-  tomcat_instance_version_path = tomcat_version_path
-  if tomcat_instance_hash.has_key?('basedir')
-    tomcat_instance_base_path = tomcat_instance_hash['basedir'] 
-  end
-  
-  tomcat_path = tomcat_instance_base_path + '/' + tomcat_instance_name + '/' + tomcat_instance_version_path 
-  tomcat_path_logs = tomcat_path + '/logs'
-  if tomcat_instance_hash.has_key?('logdir')
-    tomcat_path_logs = tomcat_instance_hash['logdir'] 
-  end
--%>
-    username:       <%= tomcat_instance_hash['user'] %>
-    tomcat_server:  <%= @fqdn %> 
-    tomcat_webapps: <%= tomcat_path %>/webapps
-    tomcat_bin:     <%= tomcat_path %>/bin
-    tomcat_libs:    <%= tomcat_path %>/libs
-    tomcat_logs:    <%= tomcat_path_logs %>
-<% end %>
-<% else %>
+  <%=tomcat_instance_name.lstrip -%>:
+<% tomcat_instances_hash[tomcat_instance_name].each_pair do |tomcat_instance_lvl1_name, tomcat_instance_lvl1_value| -%>
+<% if tomcat_instance_lvl1_value.class == Hash -%>
+    <%=tomcat_instance_lvl1_name -%>:
+<% tomcat_instance_lvl1_value.each_pair do |tomcat_instance_lvl2_name, tomcat_instance_lvl2_value| -%>
+<% if tomcat_instance_lvl2_value.class == Hash -%>
+      <%=tomcat_instance_lvl2_name -%>:
+<% tomcat_instance_lvl2_value.each_pair do |tomcat_instance_lvl3_name, tomcat_instance_lvl3_value| -%>
+<% if tomcat_instance_lvl3_value.class == Hash -%>
+        <%=tomcat_instance_lvl3_name -%>:
+<% tomcat_instance_lvl3_value.each_pair do |tomcat_instance_lvl4_name, tomcat_instance_lvl4_value| -%>
+<% if tomcat_instance_lvl4_value.class == Hash -%>
+          <%=tomcat_instance_lvl4_name -%>:
+<% tomcat_instance_lvl4_value.each_pair do |tomcat_instance_lvl5_name, tomcat_instance_lvl5_value| -%>
+<% if tomcat_instance_lvl5_value.class == Hash -%>
+            <%=tomcat_instance_lvl5_name -%>:
+<% tomcat_instance_lvl5_value.each_pair do |tomcat_instance_lvl6_name, tomcat_instance_lvl6_value| -%>
+<% if tomcat_instance_lvl6_value.class == Hash -%>
+              HASHES_FROM_LEVEL_6_ARE_IGNORED          
+<% else -%><%# else for lvl6 -%>
+              <%=tomcat_instance_lvl6_name -%>:  <%=tomcat_instance_lvl6_value %>
+<% end -%><%# end for lvl6-if -%>
+<% end -%><%# end for lvl6 iterator -%>
+<% else -%><%# else for lvl5 -%>
+            <%=tomcat_instance_lvl5_name -%>:  <%=tomcat_instance_lvl5_value %>
+<% end -%><%# end for lvl5-if -%>
+<% end -%><%# end for lvl5 iterator -%>    
+<% else -%><%# else for lvl4 -%>
+          <%=tomcat_instance_lvl4_name-%>:  <%=tomcat_instance_lvl4_value %>
+<% end -%><%# end for lvl4-if -%>
+<% end -%><%# end for lvl4 iterator -%>    
+<% else -%><%# else for lvl3 -%>
+        <%=tomcat_instance_lvl3_name -%>:  <%=tomcat_instance_lvl3_value %>
+<% end -%><%# end for lvl3-if -%>
+<% end -%><%# end for lvl3 iterator -%>    
+<% else -%><%# else for lvl2 -%>
+      <%=tomcat_instance_lvl2_name -%>:  <%=tomcat_instance_lvl2_value %>
+<% end -%><%# end for lvl2-if -%>
+<% end -%><%# end for lvl2 iterator -%>
+<% else -%><%# else for lvl1 -%>
+    <%=tomcat_instance_lvl1_name -%>:  <%=tomcat_instance_lvl1_value %>
+<% end -%><%# end for lvl1-if -%>
+<% end -%><%# end for lvl1 iterator -%>
+<% end -%><%# end for tomcat_instances_hash iterator -%>
+<% else -%>
 {}
-<% end %>
+<% end -%>

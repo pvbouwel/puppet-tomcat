@@ -1,3 +1,15 @@
+0.5.0:
+
+* Provide facts tomcat_instances and tomcat status, for instances a template can be provided.
+
+* Provide tomcat instance parameter ensure
+
+* All templates can be overriden by a site module using the templates array
+
+* Removed the template class from the module
+
+* Cleaned up templates that were not validated and migrated from previous module
+
 0.4.0:
 
 * Fix staging of files

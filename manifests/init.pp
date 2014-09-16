@@ -58,4 +58,10 @@ class tomcat (
       require  => File["/etc/facter/facts.d"],
     }
   }
+  
+  file { "/etc/facter/facts.d/tomcat_status.txt":
+      ensure   => present,
+      content  => 'tomcat_status=ready',
+      require  => [File["/etc/facter/facts.d"], File["/etc/facter/facts.d/tomcat_instances.yaml"]],
+  }
 }

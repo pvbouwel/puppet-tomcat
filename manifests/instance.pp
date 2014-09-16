@@ -7,6 +7,7 @@ define tomcat::instance (
   $cpu_affinity     = $::tomcat::cpu_affinity,
   $dependencies     = $::tomcat::dependencies,
   $down             = $::tomcat::down,
+  $ensure           = 'present',
   $files            = $::tomcat::files,
   $filestore        = $::tomcat::filestore,
   $gclog_enabled    = $::tomcat::gclog_enabled,
@@ -34,7 +35,8 @@ define tomcat::instance (
   }
   $instancename        = $title
   $product     = 'apache-tomcat'
-  $product_dir = "${basedir}/${instancename}/${product}-${version}"
+  $instance_dir = "${basedir}/${instancename}"
+  $product_dir = "${instance_dir}/${product}-${version}"
 
   if ! defined(File[$workspace]) {
     file { $workspace:
@@ -60,8 +62,8 @@ define tomcat::instance (
     }
   }
   
-
-  tomcat::install { "${instancename}-${product}":
+  if $ensure == 'present' {
+    tomcat::install { "${instancename}-${product}":
     basedir         => $basedir,
     filestore       => $filestore,
     group           => $group,
@@ -166,12 +168,28 @@ define tomcat::instance (
       require => Exec["tomcat-unpack-${instancename}"],
     }
   }
+      
+  }elsif $ensure == 'present' {
+    ##Remove tomcat
+    file{ "${instance_dir}":
+      ensure => absent,
+      recurse => true,
+      force => true,
+      purge => true,
+      backup => false,
+    }
+  } else {
+    err("Unknown ensure value (${ensure})")
+  }
+    
+  
 
   tomcat::service { "${instancename}-${product}":
     basedir         => $basedir,
     bind_address    => $bind_address,
     check_port      => $check_port,
     dependencies    => $dependencies,
+    ensure          => $ensure,
     gclog_enabled   => $gclog_enabled,
     gclog_numfiles  => $gclog_numfiles,
     gclog_filesize  => $gclog_filesize,

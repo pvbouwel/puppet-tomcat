@@ -6,6 +6,7 @@ define tomcat::service (
   $cpu_affinity,
   $dependencies,
   $down,
+  $ensure,
   $filestore,
   $gclog_enabled,
   $gclog_numfiles,
