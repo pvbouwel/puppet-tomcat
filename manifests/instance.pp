@@ -35,7 +35,13 @@ define tomcat::instance (
   }
   $instancename        = $title
   $product     = 'apache-tomcat'
-  $instance_dir = "${basedir}/${instancename}"
+  
+  if $instancename == "NONAME" {
+    $final_instancedir = ""
+  } else {
+    $final_instancedir = "/${instancename}"
+  }
+  $instance_dir = "${basedir}${final_instancedir}"
   $product_dir = "${instance_dir}/${product}-${version}"
 
   if ! defined(File[$workspace]) {
@@ -67,7 +73,8 @@ define tomcat::instance (
     basedir         => $basedir,
     filestore       => $filestore,
     group           => $group,
-    instancedir     => $instancename,
+    instancedir     => $instance_dir,
+    instancename    => $instancename,
     java_home       => $java_home,
     logdir          => $logdir,
     ulimit_nofile   => $ulimit_nofile,
@@ -169,14 +176,20 @@ define tomcat::instance (
     }
   }
       
-  }elsif $ensure == 'present' {
-    ##Remove tomcat
-    file{ "${instance_dir}":
-      ensure => absent,
-      recurse => true,
-      force => true,
-      purge => true,
-      backup => false,
+  }elsif $ensure != 'present' {
+    if $instancename == "NONAME" {
+      notify{"Deletion of instances without a name is not implemented because it might delete too much.":}
+      #Optionally it can be implemented that it is checked whether a tomcat symbolic link is present and that
+      #the target is removed and subsequently the link itself.
+    }else {
+      ##Remove tomcat
+      file{ "${instance_dir}":
+        ensure => absent,
+        recurse => true,
+        force => true,
+        purge => true,
+        backup => false,
+      } 
     }
   } else {
     err("Unknown ensure value (${ensure})")

@@ -4,6 +4,7 @@ define tomcat::install (
   $group,
   $java_home,
   $logdir,
+  $instancename,
   $instancedir,
   $ulimit_nofile,
   $user,
@@ -12,14 +13,7 @@ define tomcat::install (
 ) {
   $tarball = "apache-tomcat-${version}.tar.gz"
   $subdir  = "apache-tomcat-${version}"
-
-  if $instancedir == "NONAME" {
-    $final_instancedir = ""
-  } else {
-    $final_instancedir = "/${instancedir}"
-  }
-
-  $baseinstancedir = "${basedir}/${final_instancedir}" 
+ 
 
   if ! defined(Package['tar']) {
     package { 'tar': ensure => installed }
@@ -35,8 +29,8 @@ define tomcat::install (
   if ! defined(File[$basedir]) {
     file { $basedir: ensure => directory, mode => '0755' }
   } 
-  if ! defined(File[$baseinstancedir]) {
-    file { $baseinstancedir: ensure => directory, mode => '0755' }
+  if ! defined(File[$instancedir]) {
+    file { $instancedir: ensure => directory, mode => '0755' }
   }
   if ! defined(File["${workspace}/${tarball}"]) {
     file { "${workspace}/${tarball}":
@@ -48,24 +42,25 @@ define tomcat::install (
       require => File[$workspace],
     }
   }
-  exec { "tomcat-unpack-${instancedir}":
-    cwd         => $baseinstancedir,
+  notify{"Instancedir = ${instancedir}":}
+  exec { "tomcat-unpack-${instancename}":
+    cwd         => $instancedir,
     command     => "/bin/tar -zxf '${workspace}/${tarball}'",
-    creates     => "${baseinstancedir}/${subdir}",
-    notify      => Exec["tomcat-fix-ownership-${instancedir}"],
-    require     => [ File[$basedir], File[$baseinstancedir], File["${workspace}/${tarball}"] ],
+    creates     => "${instancedir}/${subdir}",
+    notify      => Exec["tomcat-fix-ownership-${instancename}"],
+    require     => [ File[$basedir], File["${instancedir}"], File["${workspace}/${tarball}"] ],
   }
-  exec { "tomcat-fix-ownership-${instancedir}":
-    command     => "/bin/chown -R ${user}:${group} ${baseinstancedir}/${subdir}",
+  exec { "tomcat-fix-ownership-${instancename}":
+    command     => "/bin/chown -R ${user}:${group} ${instancedir}/${subdir}",
     refreshonly => true,
   }
-  file { "${baseinstancedir}/${subdir}":
+  file { "${instancedir}/${subdir}":
     ensure  => directory,
-    require => Exec["tomcat-unpack-${instancedir}"],
+    require => Exec["tomcat-unpack-${instancename}"],
   }
-  file { "${baseinstancedir}/tomcat":
+  file { "${instancedir}/tomcat":
     ensure  => link,
     target  => $subdir,
-    require => File[$baseinstancedir],
+    require => File[$instancedir],
   }
 }
