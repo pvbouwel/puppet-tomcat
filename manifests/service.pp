@@ -1,28 +1,22 @@
 define tomcat::service (
-  $basedir,
-  $bind_address,
-  $check_port,
-  $config,
-  $cpu_affinity,
-  $dependencies,
-  $down,
-  $ensure,
-  $filestore,
-  $gclog_enabled,
-  $gclog_numfiles,
-  $gclog_filesize,
-  $group,
-  $localhost,
-  $logdir,
+  $instancename,
   $java_home,
-  $java_opts,
-  $max_mem,
-  $min_mem,
-  $product,
-  $ulimit_nofile,
+  $product_dir,
+  $templates,
   $user,
-  $version,
 ) {
-  $product_dir = "${basedir}/${product}-${version}"
+  if ! $templates['servicescript.sh'] {
+    file { "/etc/init.d/tomcat_${instancename}.sh":
+      ensure   => present,
+      content  => template('tomcat/servicescript.sh.erb'),
+      mode   => '0755',
+    }
+  } else {
+    file { "/etc/init.d/tomcat_${instancename}.sh":
+      ensure   => present,
+      content  => template($templates['servicescript.sh']),
+      mode   => '0755',
+    }
+  }
 
 }

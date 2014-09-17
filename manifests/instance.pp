@@ -63,119 +63,126 @@ define tomcat::instance (
       password         => '!!',
       password_max_age => '-1',
       password_min_age => '-1',
-      shell            => '/sbin/nologin',
+      shell            => '/bin/bash',
       managehome       => true,
     }
   }
   
   if $ensure == 'present' {
     tomcat::install { "${instancename}-${product}":
-    basedir         => $basedir,
-    filestore       => $filestore,
-    group           => $group,
-    instancedir     => $instance_dir,
-    instancename    => $instancename,
-    java_home       => $java_home,
-    logdir          => $logdir,
-    ulimit_nofile   => $ulimit_nofile,
-    user            => $user,
-    version         => $version,
-    workspace       => $workspace,
-  }
+      basedir         => $basedir,
+      filestore       => $filestore,
+      group           => $group,
+      instancedir     => $instance_dir,
+      instancename    => $instancename,
+      java_home       => $java_home,
+      logdir          => $logdir,
+      ulimit_nofile   => $ulimit_nofile,
+      user            => $user,
+      version         => $version,
+      workspace       => $workspace,
+    }
 
-  if ! $templates['bin/startup.sh'] {
-    file { "${product_dir}/bin/startup.sh":
-      ensure   => present,
-      owner    => $user,
-      group    => $group,
-      mode     => $mode,
-      content  => template('tomcat/startup.sh.erb'),
-      require  => Exec["tomcat-unpack-${instancename}"],
+    if ! $templates['bin/startup.sh'] {
+      file { "${product_dir}/bin/startup.sh":
+        ensure   => present,
+        owner    => $user,
+        group    => $group,
+        mode     => $mode,
+        content  => template('tomcat/startup.sh.erb'),
+        require  => Exec["tomcat-unpack-${instancename}"],
+      }
+    } else {
+      file { "${product_dir}/bin/startup.sh":
+        ensure   => present,
+        owner    => $user,
+        group    => $group,
+        mode     => $mode,
+        content  => template($templates['bin/startup.sh']),
+        require  => Exec["tomcat-unpack-${instancename}"],
+      }
     }
-  } else {
-    file { "${product_dir}/bin/startup.sh":
-      ensure   => present,
-      owner    => $user,
-      group    => $group,
-      mode     => $mode,
-      content  => template($templates['bin/startup.sh']),
-      require  => Exec["tomcat-unpack-${instancename}"],
-    }
-  }
 
-  if ! $templates['server.xml'] {
-    file { "${product_dir}/conf/server.xml":
-      ensure   => present,
-      owner    => $user,
-      group    => $group,
-      mode     => $mode,
-      content  => template('tomcat/server.xml.erb'),
-      require  => Exec["tomcat-unpack-${instancename}"],
+    if ! $templates['server.xml'] {
+      file { "${product_dir}/conf/server.xml":
+        ensure   => present,
+        owner    => $user,
+        group    => $group,
+        mode     => $mode,
+        content  => template('tomcat/server.xml.erb'),
+        require  => Exec["tomcat-unpack-${instancename}"],
+      }
+    } else {
+      file { "${product_dir}/conf/server.xml":
+        ensure   => present,
+        owner    => $user,
+        group    => $group,
+        mode     => $mode,
+        content  => template($templates['server.xml']),
+        require  => Exec["tomcat-unpack-${instancename}"],
+      }
     }
-  } else {
-    file { "${product_dir}/conf/server.xml":
-      ensure   => present,
-      owner    => $user,
-      group    => $group,
-      mode     => $mode,
-      content  => template($templates['server.xml']),
-      require  => Exec["tomcat-unpack-${instancename}"],
-    }
-  }
 
-  if ! $templates['logging.properties'] {
-    file { "${product_dir}/conf/logging.properties":
-      ensure   => present,
-      owner    => $user,
-      group    => $group,
-      mode     => $mode,
-      content  => template('tomcat/logging.properties.erb'),
-      require  => Exec["tomcat-unpack-${instancename}"],
+    if ! $templates['logging.properties'] {
+      file { "${product_dir}/conf/logging.properties":
+        ensure   => present,
+        owner    => $user,
+        group    => $group,
+        mode     => $mode,
+        content  => template('tomcat/logging.properties.erb'),
+        require  => Exec["tomcat-unpack-${instancename}"],
+      }
+    } else {
+      file { "${product_dir}/conf/logging.properties":
+        ensure   => present,
+        owner    => $user,
+        group    => $group,
+        mode     => $mode,
+        content  => template($templates['logging.properties']),
+        require  => Exec["tomcat-unpack-${instancename}"],
+      }
     }
-  } else {
-    file { "${product_dir}/conf/logging.properties":
-      ensure   => present,
-      owner    => $user,
-      group    => $group,
-      mode     => $mode,
-      content  => template($templates['logging.properties']),
-      require  => Exec["tomcat-unpack-${instancename}"],
-    }
-  }
 
-  create_resources_with_prefix( 'tomcat::file', $files,
-    {
-      group         => $group,
-      instancename  => $instancename,
-      mode          => $mode,
+    create_resources_with_prefix( 'tomcat::file', $files,
+      {
+        group         => $group,
+        instancename  => $instancename,
+        mode          => $mode,
+        product_dir   => $product_dir,
+        user          => $user,
+      },
+      "${product_dir}/",
+    )
+
+    if $remove_docs {
+      file { "${product_dir}/webapps/docs":
+        ensure  => absent,
+        recurse => true,
+        force   => true,
+        purge   => true,
+        backup  => false,
+        require => Exec["tomcat-unpack-${instancename}"],
+      }
+    }
+
+    if $remove_examples {
+      file { "${product_dir}/webapps/examples":
+        ensure  => absent,
+        recurse => true,
+        force   => true,
+        purge   => true,
+        backup  => false,
+        require => Exec["tomcat-unpack-${instancename}"],
+      }
+    }
+    
+    tomcat::service { "${instancename}-${product}":
       product_dir   => $product_dir,
       user          => $user,
-    },
-    "${product_dir}/",
-  )
-
-  if $remove_docs {
-    file { "${product_dir}/webapps/docs":
-      ensure  => absent,
-      recurse => true,
-      force   => true,
-      purge   => true,
-      backup  => false,
-      require => Exec["tomcat-unpack-${instancename}"],
-    }
-  }
-
-  if $remove_examples {
-    file { "${product_dir}/webapps/examples":
-      ensure  => absent,
-      recurse => true,
-      force   => true,
-      purge   => true,
-      backup  => false,
-      require => Exec["tomcat-unpack-${instancename}"],
-    }
-  }
-      
+      java_home     => $java_home,
+      templates     => $templates,
+      instancename => $instancename,
+    }      
   }elsif $ensure != 'present' {
     if $instancename == "NONAME" {
       notify{"Deletion of instances without a name is not implemented because it might delete too much.":}
@@ -191,36 +198,10 @@ define tomcat::instance (
         backup => false,
       } 
     }
+    file { "/etc/init.d/tomcat_${instancename}.sh":
+      ensure => absent,      
+    }
   } else {
     err("Unknown ensure value (${ensure})")
   }
-    
-  
-
-  tomcat::service { "${instancename}-${product}":
-    basedir         => $basedir,
-    bind_address    => $bind_address,
-    check_port      => $check_port,
-    dependencies    => $dependencies,
-    ensure          => $ensure,
-    gclog_enabled   => $gclog_enabled,
-    gclog_numfiles  => $gclog_numfiles,
-    gclog_filesize  => $gclog_filesize,
-    localhost       => $localhost,
-    logdir          => $logdir,
-    product         => $product,
-    user            => $user,
-    filestore       => $filestore,
-    group           => $group,
-    version         => $version,
-    java_home       => $java_home,
-    java_opts       => $java_opts,
-    config          => $config,
-    cpu_affinity    => $cpu_affinity,
-    min_mem         => $min_mem,
-    max_mem         => $max_mem,
-    down            => $down,
-    ulimit_nofile   => $ulimit_nofile,
-  }
-
 }
