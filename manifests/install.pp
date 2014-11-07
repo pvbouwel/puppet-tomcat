@@ -42,7 +42,6 @@ define tomcat::install (
       require => File[$workspace],
     }
   }
-  notify{"Instancedir = ${instancedir}":}
   exec { "tomcat-unpack-${instancename}":
     cwd         => $instancedir,
     command     => "/bin/tar -zxf '${workspace}/${tarball}'",

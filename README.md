@@ -1,15 +1,14 @@
 The goal is to have a puppet module that is able to install tomcat in its
 basic form.  So to remove the dependency from runit.  Additionally we want
-to support multiple versions on 1, for this each tomcat instance will have
+to support multiple versions on 1 server, for this each tomcat instance will have
 its own full blown home directory.  Also it would be nice to have the
 possibility to configure the ports so that multiple instance can run
-simultaneously. I'd like to build on this project because I like the idea
+simultaneously. I'd like to build on this project of erwbgy because I like the idea
 of using the tarballs to create a setup.
 
 # puppet-tomcat
 
-Puppet module to install Apache Tomcat and run instances as Runit services
-under one or more users.
+Puppet module to install Apache Tomcat 
 
 The recommended usage is to place the configuration in hiera and just:
 

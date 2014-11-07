@@ -1,4 +1,8 @@
-0.5.0:
+0.0.6:
+
+* Stop notifying the instance dir on each puppet run.
+
+0.0.5:
 
 * Provide facts tomcat_instances and tomcat status, for instances a template can be provided.
 
@@ -10,7 +14,7 @@
 
 * Cleaned up templates that were not validated and migrated from previous module
 
-0.4.0:
+0.0.4:
 
 * Fix staging of files
 
