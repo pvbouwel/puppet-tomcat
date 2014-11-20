@@ -2,7 +2,7 @@
   "author": "pvbouwel",
   "dependencies": [
     {
-      "name": "puppetlabs/stdlib",
+      "name": "puppetlabs-stdlib",
       "version_requirement": ">=2.6.0"
     }
   ],
