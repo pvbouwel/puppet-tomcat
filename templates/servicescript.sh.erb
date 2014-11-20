@@ -11,6 +11,8 @@
 # Added coloring and additional status
 # Added check for existence of the tomcat user
 # Added termination proccess
+# chkconfig: 2345 90 10
+# description: Manage tomcat instance <%= @instancename %>
  
 #Location of JAVA_HOME (bin files)
 export JAVA_HOME=<%= @java_home %>
