@@ -207,9 +207,6 @@ define tomcat::instance (
         backup => false,
       } 
     }
-    file { "/etc/init.d/tomcat_${instancename}.sh":
-      ensure => absent,      
-    }
   } else {
     err("Unknown ensure value (${ensure})")
   }
