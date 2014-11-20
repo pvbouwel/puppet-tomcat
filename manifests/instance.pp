@@ -176,7 +176,7 @@ define tomcat::instance (
       }
     }
     
-    tomcat::service { "${instancename}-${product}":
+    tomcat::service_script { "${instancename}-${product}":
       product_dir   => $product_dir,
       ensure        => present,
       user          => $user,
@@ -190,7 +190,7 @@ define tomcat::instance (
       #Optionally it can be implemented that it is checked whether a tomcat symbolic link is present and that
       #the target is removed and subsequently the link itself.
     }else {
-      tomcat::service { "${instancename}-${product}":
+      tomcat::service_script { "${instancename}-${product}":
         product_dir   => $product_dir,
         ensure        => absent,
         user          => $user,

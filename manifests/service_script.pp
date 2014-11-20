@@ -1,4 +1,4 @@
-define tomcat::service (
+define tomcat::service_script (
   $ensure = present,
   $instancename,
   $java_home,
@@ -24,12 +24,12 @@ define tomcat::service (
     $servicescript_content = template($templates['servicescript.sh'])
   }
   
-  ::file{ "/etc/init.d/tomcat_${instancename}.sh":
+  file{ "/etc/init.d/tomcat_${instancename}.sh":
     ensure   => $tomcat_service_ensure,
     content  => $servicescript_content,
     mode   => '0755',
   }
-  ::service{ "tomcat_${instancename}.sh":
+  service{ "tomcat_${instancename}.sh":
     ensure => $tomcat_service_status,
     enable => true,
     require => [ File["${product_dir}/conf/server.xml"], 
