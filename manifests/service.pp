@@ -7,8 +7,9 @@ define tomcat::service (
   $user,
 ) {
   
-  $tomcat_service_ensure = $ensure
-  if $tomcat_service_ensure == present {
+  
+  if $ensure == present {
+    $tomcat_service_ensure = $ensure
     $tomcat_service_status = running
   } else {
     $tomcat_service_status = stopped
