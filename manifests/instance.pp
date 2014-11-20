@@ -178,6 +178,7 @@ define tomcat::instance (
     
     tomcat::service { "${instancename}-${product}":
       product_dir   => $product_dir,
+      ensure        => present,
       user          => $user,
       java_home     => $java_home,
       templates     => $templates,
@@ -189,6 +190,14 @@ define tomcat::instance (
       #Optionally it can be implemented that it is checked whether a tomcat symbolic link is present and that
       #the target is removed and subsequently the link itself.
     }else {
+      tomcat::service { "${instancename}-${product}":
+        product_dir   => $product_dir,
+        ensure        => absent,
+        user          => $user,
+        java_home     => $java_home,
+        templates     => $templates,
+        instancename => $instancename,
+      }->
       ##Remove tomcat
       file{ "${instance_dir}":
         ensure => absent,
