@@ -20,9 +20,11 @@ define tomcat::service_script (
      mode   => '0755',
    }
    service{ "tomcat_${instancename}.sh":
-     ensure => running,
-     enable => true,
-     require => File["/etc/init.d/tomcat_${instancename}.sh"]
+     name      => "tomcat_${instancename}.sh",
+     ensure    => running,
+     enable    => true,
+     hasstatus => true,
+     require   => File["/etc/init.d/tomcat_${instancename}.sh"]
    }
   }else {
     if $ensure == present {
@@ -34,8 +36,10 @@ define tomcat::service_script (
 	    }
 
 	    service{ "tomcat_${instancename}.sh":
-	      ensure => stopped,
-	      enable => true,
+	      name      => "tomcat_${instancename}.sh",
+	      hasstatus => true,
+	      ensure    => stopped,
+	      enable    => true,
 	    }
     }
   }
