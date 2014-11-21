@@ -12,6 +12,7 @@ define tomcat::service_script (
   } else {
     $servicescript_content = template($templates['servicescript.sh'])
   }
+  
   if $ensure == present {
    file{ "/etc/init.d/tomcat_${instancename}.sh":
      ensure   => present,
