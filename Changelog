@@ -1,3 +1,7 @@
+0.1.0:
+* Make sure that service script is created and removed depending on the ensure parameter
+* Also manage this service
+
 0.0.6:
 
 * Stop notifying the instance dir on each puppet run.
