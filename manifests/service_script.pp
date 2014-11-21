@@ -1,10 +1,10 @@
 define tomcat::service_script (
-  $ensure = present,
-  $instancename,
-  $java_home,
-  $product_dir,
-  $templates,
-  $user,
+  $ensure       = present,
+  $instancename = undef,
+  $java_home    = undef,
+  $product_dir  = undef,
+  $templates    = undef,
+  $user         = undef,
 ) {
    
   if ! $templates['servicescript.sh'] {
@@ -15,9 +15,9 @@ define tomcat::service_script (
   
   if $ensure == present {
    file{ "/etc/init.d/tomcat_${instancename}.sh":
-     ensure   => present,
-     content  => $servicescript_content,
-     mode   => '0755',
+     ensure  => present,
+     content => $servicescript_content,
+     mode    => '0755',
    }
    service{ "tomcat_${instancename}.sh":
      name      => "tomcat_${instancename}.sh",
@@ -26,21 +26,19 @@ define tomcat::service_script (
      hasstatus => true,
      require   => File["/etc/init.d/tomcat_${instancename}.sh"]
    }
-  }else {
-    if $ensure == present {
-	    file{ "/etc/init.d/tomcat_${instancename}.sh":
-	      ensure   => absent,
-	      content  => $servicescript_content,
-	      mode   => '0755',
-	      require => Service["tomcat_${instancename}.sh"]
-	    }
+  }else {  
+    file{ "/etc/init.d/tomcat_${instancename}.sh":
+      ensure  => absent,
+      content => $servicescript_content,
+      mode    => '0755',
+      require => Service["tomcat_${instancename}.sh"]
+    }
 
-	    service{ "tomcat_${instancename}.sh":
-	      name      => "tomcat_${instancename}.sh",
-	      hasstatus => true,
-	      ensure    => stopped,
-	      enable    => true,
-	    }
+    service{ "tomcat_${instancename}.sh":
+      name      => "tomcat_${instancename}.sh",
+      hasstatus => true,
+      ensure    => stopped,
+      enable    => true,
     }
   }
 }

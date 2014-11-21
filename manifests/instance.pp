@@ -85,71 +85,71 @@ define tomcat::instance (
 
     if ! $templates['bin/startup.sh'] {
       file { "${product_dir}/bin/startup.sh":
-        ensure   => present,
-        owner    => $user,
-        group    => $group,
-        mode     => $mode,
-        content  => template('tomcat/startup.sh.erb'),
-        require  => Exec["tomcat-unpack-${instancename}"],
+        ensure  => present,
+        owner   => $user,
+        group   => $group,
+        mode    => $mode,
+        content => template('tomcat/startup.sh.erb'),
+        require => Exec["tomcat-unpack-${instancename}"],
       }
     } else {
       file { "${product_dir}/bin/startup.sh":
-        ensure   => present,
-        owner    => $user,
-        group    => $group,
-        mode     => $mode,
-        content  => template($templates['bin/startup.sh']),
-        require  => Exec["tomcat-unpack-${instancename}"],
+        ensure  => present,
+        owner   => $user,
+        group   => $group,
+        mode    => $mode,
+        content => template($templates['bin/startup.sh']),
+        require => Exec["tomcat-unpack-${instancename}"],
       }
     }
 
     if ! $templates['server.xml'] {
       file { "${product_dir}/conf/server.xml":
-        ensure   => present,
-        owner    => $user,
-        group    => $group,
-        mode     => $mode,
-        content  => template('tomcat/server.xml.erb'),
-        require  => Exec["tomcat-unpack-${instancename}"],
+        ensure  => present,
+        owner   => $user,
+        group   => $group,
+        mode    => $mode,
+        content => template('tomcat/server.xml.erb'),
+        require => Exec["tomcat-unpack-${instancename}"],
       }
     } else {
       file { "${product_dir}/conf/server.xml":
-        ensure   => present,
-        owner    => $user,
-        group    => $group,
-        mode     => $mode,
-        content  => template($templates['server.xml']),
-        require  => Exec["tomcat-unpack-${instancename}"],
+        ensure  => present,
+        owner   => $user,
+        group   => $group,
+        mode    => $mode,
+        content => template($templates['server.xml']),
+        require => Exec["tomcat-unpack-${instancename}"],
       }
     }
 
     if ! $templates['logging.properties'] {
       file { "${product_dir}/conf/logging.properties":
-        ensure   => present,
-        owner    => $user,
-        group    => $group,
-        mode     => $mode,
-        content  => template('tomcat/logging.properties.erb'),
-        require  => Exec["tomcat-unpack-${instancename}"],
+        ensure  => present,
+        owner   => $user,
+        group   => $group,
+        mode    => $mode,
+        content => template('tomcat/logging.properties.erb'),
+        require => Exec["tomcat-unpack-${instancename}"],
       }
     } else {
       file { "${product_dir}/conf/logging.properties":
-        ensure   => present,
-        owner    => $user,
-        group    => $group,
-        mode     => $mode,
-        content  => template($templates['logging.properties']),
-        require  => Exec["tomcat-unpack-${instancename}"],
+        ensure  => present,
+        owner   => $user,
+        group   => $group,
+        mode    => $mode,
+        content => template($templates['logging.properties']),
+        require => Exec["tomcat-unpack-${instancename}"],
       }
     }
 
     create_resources_with_prefix( 'tomcat::file', $files,
       {
-        group         => $group,
-        instancename  => $instancename,
-        mode          => $mode,
-        product_dir   => $product_dir,
-        user          => $user,
+        group        => $group,
+        instancename => $instancename,
+        mode         => $mode,
+        product_dir  => $product_dir,
+        user         => $user,
       },
       "${product_dir}/",
     )
@@ -177,11 +177,11 @@ define tomcat::instance (
     }
     
     tomcat::service_script { "${instancename}-${product}":
-      product_dir   => $product_dir,
-      ensure        => present,
-      user          => $user,
-      java_home     => $java_home,
-      templates     => $templates,
+      product_dir  => $product_dir,
+      ensure       => present,
+      user         => $user,
+      java_home    => $java_home,
+      templates    => $templates,
       instancename => $instancename,
     }      
   }elsif $ensure != 'present' {
@@ -191,20 +191,20 @@ define tomcat::instance (
       #the target is removed and subsequently the link itself.
     }else {
       tomcat::service_script { "${instancename}-${product}":
-        product_dir   => $product_dir,
-        ensure        => absent,
-        user          => $user,
-        java_home     => $java_home,
-        templates     => $templates,
+        product_dir  => $product_dir,
+        ensure       => absent,
+        user         => $user,
+        java_home    => $java_home,
+        templates    => $templates,
         instancename => $instancename,
       }->
       ##Remove tomcat
       file{ "${instance_dir}":
-        ensure => absent,
+        ensure  => absent,
         recurse => true,
-        force => true,
-        purge => true,
-        backup => false,
+        force   => true,
+        purge   => true,
+        backup  => false,
       } 
     }
   } else {
