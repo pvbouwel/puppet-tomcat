@@ -1,7 +1,10 @@
-0.2.1:
+0.3.2:
+* Make sure that instance_dir parameter is correctly passed
+
+0.3.1:
 * Test if /etc/facts is already defined before defining it
 
-0.2.0:
+0.3.0:
 * Change log dir to not put tomcat behind it but to really take the given logdir.
 * Change service script in order to use instance_dir to get process ID (otherwise it the status is not reported correctly when the tomcat is started from the symlinked location).
 
