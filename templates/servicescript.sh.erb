@@ -38,7 +38,7 @@ TOMCAT_USAGE="Usage: $0 {\e[00;32mstart\e[00m|\e[00;31mstop\e[00m|\e[00;31mkill\
 SHUTDOWN_WAIT=20
  
 tomcat_pid() {
-  echo `ps -fe | grep $CATALINA_BASE | grep -v grep | tr -s " "|cut -d" " -f2`
+  echo `ps -fe | grep <%= @instance_dir %>   | grep -v grep | tr -s " "|cut -d" " -f2`
 }
  
 start() {

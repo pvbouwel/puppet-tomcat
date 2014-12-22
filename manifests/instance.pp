@@ -192,6 +192,7 @@ define tomcat::instance (
     }else {
       tomcat::service_script { "${instancename}-${product}":
         product_dir  => $product_dir,
+        instance_dir => $instance_dir,
         ensure       => absent,
         user         => $user,
         java_home    => $java_home,

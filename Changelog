@@ -1,3 +1,7 @@
+0.2.0:
+* Change log dir to not put tomcat behind it but to really take the given logdir.
+* Change service script in order to use instance_dir to get process ID (otherwise it the status is not reported correctly when the tomcat is started from the symlinked location).
+
 0.1.0:
 * Make sure that service script is created and removed depending on the ensure parameter
 * Also manage this service
