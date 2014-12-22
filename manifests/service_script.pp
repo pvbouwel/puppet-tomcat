@@ -1,10 +1,11 @@
 define tomcat::service_script (
   $ensure       = present,
   $instancename = undef,
+  $instance_dir = undef,
   $java_home    = undef,
   $product_dir  = undef,
   $templates    = undef,
-  $user         = undef,
+  $user         = undef
 ) {
    
   if ! $templates['servicescript.sh'] {

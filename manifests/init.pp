@@ -33,14 +33,19 @@ class tomcat (
     create_resources('tomcat::instance', $tomcat_instances_hash)
   }
   
-  file { "/etc/facter":
-    ensure   => directory,
+  if ! defined(File['/etc/facter']) {
+	  file { '/etc/facter':
+	    ensure   => directory,
+	  }  
   }
- 
-  file { "/etc/facter/facts.d":
-    ensure   => directory,
-    require  => File["/etc/facter"],
+  
+  if ! defined(File['/etc/facter/facts.d']) {
+	  file { '/etc/facter/facts.d':
+	    ensure   => directory,
+	    require  => File['/etc/facter'],
+	  }  
   }
+  
  
   $tomcat_version_path = "apache-tomcat-${version}"
   $template_tomcat_instances = undef
