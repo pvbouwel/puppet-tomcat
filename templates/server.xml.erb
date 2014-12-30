@@ -37,11 +37,11 @@
   
   <% if @connectors %>
     <%# Iterate over connectors based on http://www.krzywanski.net/archives/703 + sorting from https://projects.puppetlabs.com/issues/16266 %>
-    <% connectors.keys.sort.each_pair do |connector_name| 
+    <% connectors.keys.sort.each do |connector_name| 
           connector_hash = connectors[connector_name] %>
      <!-- Definition for connector <%= connector_name %> --> 
      <Connector<% 
-       connector_hash.keys.sort.each_pair do |connector_property|
+       connector_hash.keys.sort.each do |connector_property|
          connector_property_value = connector_hash[connector_property]
          %> <%=connector_property%>="<%=connector_property_value%>"<% 
        end 
