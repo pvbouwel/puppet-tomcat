@@ -36,10 +36,16 @@
   <Service name="Catalina">                                                
   
   <% if @connectors %>
-    <%# Iterate over connectors based on http://www.krzywanski.net/archives/703 %>
-    <% connectors.each_pair do |connector_name, connector_hash| %>
+    <%# Iterate over connectors based on http://www.krzywanski.net/archives/703 + sorting from https://projects.puppetlabs.com/issues/16266 %>
+    <% connectors.keys.sort.each_pair do |connector_name| 
+          connector_hash = connectors[connector_name] %>
      <!-- Definition for connector <%= connector_name %> --> 
-     <Connector<% connector_hash.each_pair do |connector_property, connector_property_value| %> <%=connector_property%>="<%=connector_property_value%>"<% end %>/>       
+     <Connector<% 
+       connector_hash.keys.sort.each_pair do |connector_property|
+         connector_property_value = connector_hash[connector_property]
+         %> <%=connector_property%>="<%=connector_property_value%>"<% 
+       end 
+              %>/>       
     <% end %>
   <% else %>
     <%# No connectors defined, take the default config %>
