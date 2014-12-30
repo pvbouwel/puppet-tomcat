@@ -1,3 +1,7 @@
+0.3.3:
+* Make sure that server.xml.erb puts hash elements alphabetically so that the configuration files
+doesn't change on subsequent puppet runs (cause explained at https://projects.puppetlabs.com/issues/16266)
+
 0.3.2:
 * Make sure that instance_dir parameter is correctly passed
 
