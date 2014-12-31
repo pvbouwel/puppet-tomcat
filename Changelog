@@ -1,3 +1,6 @@
+0.3.5:
+* Store access logs in log directory.
+ 
 0.3.4:
 * Introduce parameter service_ensure for an instance.
 
