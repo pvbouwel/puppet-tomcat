@@ -90,7 +90,7 @@
       <Host name="<%= @localhost %>"  appBase="webapps"
             unpackWARs="true" autoDeploy="true">
 
-        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="<%= @logdir %>/tomcat"
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="<%= @logdir %>"
                prefix="<%= @localhost %>_access_log." suffix=".txt"
                pattern="%h %I %D %t &quot;%r&quot; %s %b" />
 
