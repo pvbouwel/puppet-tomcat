@@ -14,18 +14,20 @@ define tomcat::service_script (
     $servicescript_content = template($templates['servicescript.sh'])
   }
   
-  if $ensure == present {
+  if $ensure == present or $ensure == "running" {
    file{ "/etc/init.d/tomcat_${instancename}.sh":
      ensure  => present,
      content => $servicescript_content,
      mode    => '0755',
    }
-   service{ "tomcat_${instancename}.sh":
-     name      => "tomcat_${instancename}.sh",
-     ensure    => running,
-     enable    => true,
-     hasstatus => true,
-     require   => File["/etc/init.d/tomcat_${instancename}.sh"]
+   if $ensure == "running" {
+	   service{ "tomcat_${instancename}.sh":
+	     name      => "tomcat_${instancename}.sh",
+	     ensure    => running,
+	     enable    => true,
+	     hasstatus => true,
+	     require   => File["/etc/init.d/tomcat_${instancename}.sh"]
+	   } 
    }
   }else {  
     file{ "/etc/init.d/tomcat_${instancename}.sh":

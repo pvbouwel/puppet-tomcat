@@ -29,6 +29,7 @@ define tomcat::instance (
   $user             = $::tomcat::user,
   $version          = $::tomcat::version,
   $workspace        = $::tomcat::workspace,
+  $service_ensure   = present
 ) {
   if ! $version {
     fail( 'tomcat version MUST be set' )
@@ -179,7 +180,7 @@ define tomcat::instance (
     tomcat::service_script { "${instancename}-${product}":
       product_dir  => $product_dir,
       instance_dir => $instance_dir,
-      ensure       => present,
+      ensure       => $service_ensure,
       user         => $user,
       java_home    => $java_home,
       templates    => $templates,
