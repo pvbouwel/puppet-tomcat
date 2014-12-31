@@ -106,6 +106,9 @@ limit in /etc/security/limits.conf (or equivalent) for the user.
 ## tomcat::instance parameters
 
 *title*: The user the Tomcat instance runs as
+*service_ensure*: Can be either present (default) or "running".  If it is present a service 
+script is provisioned.  If it is "running" then on each puppet run the service will be 
+checked and if it is not running it will be started.
 
 Plus all of the parameters specified in 'tomcat parameters' above
 
