@@ -26,9 +26,9 @@ define tomcat::install (
     owner => $user,
     group => $group,
   }
-  if ! defined(File[$basedir]) {
-    file { $basedir: ensure => directory, mode => '0755' }
-  } 
+  #if ! defined(File[$basedir]) {
+  #  file { $basedir: ensure => directory, mode => '0755' }
+  #} 
   if ! defined(File[$instancedir]) {
     file { $instancedir: ensure => directory, mode => '0755' }
   }
