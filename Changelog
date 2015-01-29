@@ -1,3 +1,6 @@
+0.4.1:
+* Test version without dependency on basedir
+
 0.4.0:
 * Basedir should not be managed by the module as this might be part of the OS 
 

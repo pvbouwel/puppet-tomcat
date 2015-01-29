@@ -47,7 +47,7 @@ define tomcat::install (
     command     => "/bin/tar -zxf '${workspace}/${tarball}'",
     creates     => "${instancedir}/${subdir}",
     notify      => Exec["tomcat-fix-ownership-${instancename}"],
-    require     => [ File[$basedir], File["${instancedir}"], File["${workspace}/${tarball}"] ],
+    require     => [ File["${instancedir}"], File["${workspace}/${tarball}"] ],
   }
   exec { "tomcat-fix-ownership-${instancename}":
     command     => "/bin/chown -R ${user}:${group} ${instancedir}/${subdir}",
