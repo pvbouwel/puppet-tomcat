@@ -7,7 +7,7 @@ class tomcat (
   $cpu_affinity          = undef,
   $dependencies          = undef,
   $down                  = false,
-  $jvmRoute              = undef,
+  $engine                = {},
   $files                 = {},
   $filestore             = 'puppet:///files/tomcat',
   $gclog_enabled         = false,

@@ -68,8 +68,8 @@
     <Engine name="Catalina" defaultHost="<%= @localhost %>" jvmRoute="jvm1">
     -->
     <Engine name="Catalina" defaultHost="<%= @localhost %>"<% 
-    if @jvmRoute
-      %> jvmRoute="<%= @jvmRoute %>"<%
+    if @engine and @engine['jvmRoute']
+      %> jvmRoute="<%= @engine['jvmRoute'] %>"<%
     end
                                                            %>>
 
