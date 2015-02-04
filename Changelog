@@ -1,3 +1,7 @@
+0.4.2:
+* Add engine attribute for tomcat class and tomcat instance.  Adapt template so that if a jvmRoute is set in this
+  engine hash that a jvmRoute is configured on the engine in server.xml
+
 0.4.1:
 * Test version without dependency on basedir
 
