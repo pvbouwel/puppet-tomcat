@@ -7,6 +7,7 @@ define tomcat::instance (
   $cpu_affinity     = $::tomcat::cpu_affinity,
   $dependencies     = $::tomcat::dependencies,
   $down             = $::tomcat::down,
+  $engine           = $::tomcat::engine,
   $ensure           = 'present',
   $files            = $::tomcat::files,
   $filestore        = $::tomcat::filestore,
