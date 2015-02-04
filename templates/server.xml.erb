@@ -67,9 +67,9 @@
     <!-- You should set jvmRoute to support load-balancing via AJP ie :
     <Engine name="Catalina" defaultHost="<%= @localhost %>" jvmRoute="jvm1">
     -->
-    <Engine name="Catalina" defaultHost="<%= @localhost %>" <% 
-    if @engine and @engine['jvmRoute']
-      %>jvmRoute="<%= @engine['jvmRoute'] %>"<%
+    <Engine name="Catalina" defaultHost="<%= @localhost %>"<% 
+    if @jvmRoute
+      %> jvmRoute="<%= @jvmRoute %>"<%
     end
                                                            %>>
 
