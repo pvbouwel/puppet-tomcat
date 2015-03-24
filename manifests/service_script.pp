@@ -7,13 +7,13 @@ define tomcat::service_script (
   $templates    = undef,
   $user         = undef
 ) {
-   
+
   if ! $templates['servicescript.sh'] {
     $servicescript_content = template('tomcat/servicescript.sh.erb')
   } else {
     $servicescript_content = template($templates['servicescript.sh'])
   }
-  
+
   if $ensure == present or $ensure == "running" {
    file{ "/etc/init.d/tomcat_${instancename}.sh":
      ensure  => present,
@@ -27,9 +27,16 @@ define tomcat::service_script (
 	     enable    => true,
 	     hasstatus => true,
 	     require   => File["/etc/init.d/tomcat_${instancename}.sh"]
-	   } 
-   }
-  }else {  
+	   }
+   } else {
+	   service{ "tomcat_${instancename}.sh":
+	     name      => "tomcat_${instancename}.sh",
+	     enable    => true,
+	     hasstatus => true,
+	     require   => File["/etc/init.d/tomcat_${instancename}.sh"]
+	   }
+  }
+  }else {
     file{ "/etc/init.d/tomcat_${instancename}.sh":
       ensure  => absent,
       content => $servicescript_content,
