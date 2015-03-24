@@ -1,3 +1,6 @@
+# Define: tomcat::instance
+#
+# Define which initializes a tomcat instance
 define tomcat::instance (
   $basedir          = $::tomcat::basedir,
   $bind_address     = $::tomcat::bind_address,
@@ -37,9 +40,9 @@ define tomcat::instance (
   }
   $instancename        = $title
   $product     = 'apache-tomcat'
-  
-  if $instancename == "NONAME" {
-    $final_instancedir = ""
+
+  if $instancename == 'NONAME' {
+    $final_instancedir = ''
   } else {
     $final_instancedir = "/${instancename}"
   }
@@ -53,15 +56,15 @@ define tomcat::instance (
   }
 
   if ! defined(Group[$group]) {
-    group { "${group}":
+    group { $group:
       ensure => 'present',
-    }  
+    }
   }
-  if ! defined(User[$user]) {    
-    user { "${user}":
+  if ! defined(User[$user]) {
+    user { $user:
       ensure           => 'present',
       comment          => 'Apache tomcat user',
-      gid              => "${group}",
+      gid              => $group,
       password         => '!!',
       password_max_age => '-1',
       password_min_age => '-1',
@@ -69,20 +72,20 @@ define tomcat::instance (
       managehome       => true,
     }
   }
-  
+
   if $ensure == 'present' {
     tomcat::install { "${instancename}-${product}":
-      basedir         => $basedir,
-      filestore       => $filestore,
-      group           => $group,
-      instancedir     => $instance_dir,
-      instancename    => $instancename,
-      java_home       => $java_home,
-      logdir          => $logdir,
-      ulimit_nofile   => $ulimit_nofile,
-      user            => $user,
-      version         => $version,
-      workspace       => $workspace,
+      basedir       => $basedir,
+      filestore     => $filestore,
+      group         => $group,
+      instancedir   => $instance_dir,
+      instancename  => $instancename,
+      java_home     => $java_home,
+      logdir        => $logdir,
+      ulimit_nofile => $ulimit_nofile,
+      user          => $user,
+      version       => $version,
+      workspace     => $workspace,
     }
 
     if ! $templates['bin/startup.sh'] {
@@ -177,39 +180,39 @@ define tomcat::instance (
         require => Exec["tomcat-unpack-${instancename}"],
       }
     }
-    
+
     tomcat::service_script { "${instancename}-${product}":
+      ensure       => $service_ensure,
       product_dir  => $product_dir,
       instance_dir => $instance_dir,
-      ensure       => $service_ensure,
       user         => $user,
       java_home    => $java_home,
       templates    => $templates,
       instancename => $instancename,
-    }      
+    }
   }elsif $ensure != 'present' {
-    if $instancename == "NONAME" {
-      notify{"Deletion of instances without a name is not implemented because it might delete too much.":}
+    if $instancename == 'NONAME' {
+      notify { 'Deletion of instances without a name is not implemented because it might delete too much.':}
       #Optionally it can be implemented that it is checked whether a tomcat symbolic link is present and that
       #the target is removed and subsequently the link itself.
     }else {
       tomcat::service_script { "${instancename}-${product}":
+        ensure       => absent,
         product_dir  => $product_dir,
         instance_dir => $instance_dir,
-        ensure       => absent,
         user         => $user,
         java_home    => $java_home,
         templates    => $templates,
         instancename => $instancename,
       }->
       ##Remove tomcat
-      file{ "${instance_dir}":
+      file{ $instance_dir:
         ensure  => absent,
         recurse => true,
         force   => true,
         purge   => true,
         backup  => false,
-      } 
+      }
     }
   } else {
     err("Unknown ensure value (${ensure})")

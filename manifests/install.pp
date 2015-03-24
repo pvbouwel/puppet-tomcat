@@ -1,3 +1,6 @@
+# define: tomcat::install
+#
+# This define installs a tomcat instance
 define tomcat::install (
   $basedir,
   $filestore,
@@ -13,7 +16,7 @@ define tomcat::install (
 ) {
   $tarball = "apache-tomcat-${version}.tar.gz"
   $subdir  = "apache-tomcat-${version}"
- 
+
 
   if ! defined(Package['tar']) {
     package { 'tar': ensure => installed }
@@ -28,7 +31,7 @@ define tomcat::install (
   }
   #if ! defined(File[$basedir]) {
   #  file { $basedir: ensure => directory, mode => '0755' }
-  #} 
+  #}
   if ! defined(File[$instancedir]) {
     file { $instancedir: ensure => directory, mode => '0755' }
   }
@@ -39,15 +42,21 @@ define tomcat::install (
       group   => 'root',
       mode    => '0444',
       source  => "${filestore}/${tarball}",
-      require => File[$workspace],
+      require => [
+        File[$workspace],
+        Package['tar']
+      ]
     }
   }
   exec { "tomcat-unpack-${instancename}":
-    cwd         => $instancedir,
-    command     => "/bin/tar -zxf '${workspace}/${tarball}'",
-    creates     => "${instancedir}/${subdir}",
-    notify      => Exec["tomcat-fix-ownership-${instancename}"],
-    require     => [ File["${instancedir}"], File["${workspace}/${tarball}"] ],
+    cwd     => $instancedir,
+    command => "/bin/tar -zxf '${workspace}/${tarball}'",
+    creates => "${instancedir}/${subdir}",
+    notify  => Exec["tomcat-fix-ownership-${instancename}"],
+    require => [
+      File[$instancedir],
+      File["${workspace}/${tarball}"]
+    ],
   }
   exec { "tomcat-fix-ownership-${instancename}":
     command     => "/bin/chown -R ${user}:${group} ${instancedir}/${subdir}",

@@ -1,3 +1,6 @@
+# Class: tomcat
+#
+# This class initiates a tomcat puppet controlled instance
 class tomcat (
   $version               = undef,
   $basedir               = '/opt/tomcat',
@@ -33,41 +36,44 @@ class tomcat (
   if $tomcat_instances_hash {
     create_resources('tomcat::instance', $tomcat_instances_hash)
   }
-  
+
   if ! defined(File['/etc/facter']) {
-	  file { '/etc/facter':
-	    ensure   => directory,
-	  }  
+    file { '/etc/facter':
+      ensure => directory,
+    }
   }
-  
+
   if ! defined(File['/etc/facter/facts.d']) {
-	  file { '/etc/facter/facts.d':
-	    ensure   => directory,
-	    require  => File['/etc/facter'],
-	  }  
+    file { '/etc/facter/facts.d':
+      ensure  => directory,
+      require => File['/etc/facter'],
+    }
   }
-  
- 
+
+
   $tomcat_version_path = "apache-tomcat-${version}"
   $template_tomcat_instances = undef
-  
+
   if ! $templates['tomcat_instances.yaml'] {
-    file { "/etc/facter/facts.d/tomcat_instances.yaml":
-      ensure   => present,
-      content  => template('tomcat/tomcat_instances.yaml.erb'),
-      require  => File["/etc/facter/facts.d"],
+    file { '/etc/facter/facts.d/tomcat_instances.yaml':
+      ensure  => present,
+      content => template('tomcat/tomcat_instances.yaml.erb'),
+      require => File['/etc/facter/facts.d'],
     }
   } else {
-    file { "/etc/facter/facts.d/tomcat_instances.yaml":
-      ensure   => present,
-      content  => template($templates['tomcat_instances.yaml']),
-      require  => File["/etc/facter/facts.d"],
+    file { '/etc/facter/facts.d/tomcat_instances.yaml':
+      ensure  => present,
+      content => template($templates['tomcat_instances.yaml']),
+      require => File['/etc/facter/facts.d'],
     }
   }
-  
-  file { "/etc/facter/facts.d/tomcat_status.txt":
-      ensure   => present,
-      content  => 'tomcat_status=ready',
-      require  => [File["/etc/facter/facts.d"], File["/etc/facter/facts.d/tomcat_instances.yaml"]],
+
+  file { '/etc/facter/facts.d/tomcat_status.txt':
+      ensure  => present,
+      content => 'tomcat_status=ready',
+      require => [
+        File['/etc/facter/facts.d'],
+        File['/etc/facter/facts.d/tomcat_instances.yaml']
+      ],
   }
 }

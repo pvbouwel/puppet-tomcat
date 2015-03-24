@@ -1,3 +1,6 @@
+# Define: tomcat::file
+#
+# This define ensures some tomcat file has been delcared
 define tomcat::file (
   $group,
   $instancename,
@@ -21,12 +24,12 @@ define tomcat::file (
   }
   if $source {
     file { $filename:
-      ensure   => present,
-      owner    => $user,
-      group    => $group,
-      mode     => $mode,
-      source   => $source,
-      require  => Exec[
+      ensure  => present,
+      owner   => $user,
+      group   => $group,
+      mode    => $mode,
+      source  => $source,
+      require => Exec[
         "tomcat-unpack-${instancename}",
         "create-parent-dir-${filename}"
       ],
@@ -34,12 +37,12 @@ define tomcat::file (
   }
   elsif $content {
     file { $filename:
-      ensure   => present,
-      owner    => $user,
-      group    => $group,
-      mode     => $mode,
-      content  => $content,
-      require  => Exec[
+      ensure  => present,
+      owner   => $user,
+      group   => $group,
+      mode    => $mode,
+      content => $content,
+      require => Exec[
         "tomcat-unpack-${user}",
         "create-parent-dir-${filename}"
       ],

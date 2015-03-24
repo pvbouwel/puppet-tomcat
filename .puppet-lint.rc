@@ -1,0 +1,2 @@
+--no-puppet_url_without_modules-check
+--no-80chars-check
